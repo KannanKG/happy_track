@@ -1,0 +1,198 @@
+{
+  "name": "happy_track",
+  "version": "1.0.0",
+  "description": "Professional activity tracker for TestRail and Jira with automated reporting",
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development electron-forge start",
+    "dev:watch": "cross-env NODE_ENV=development ELECTRON_ENABLE_LOGGING=true electron-forge start",
+    "dev:full": "concurrently \"npm run tailwind:watch\" \"npm run dev:watch\" --names \"TW,DEV\" --prefix-colors \"cyan,magenta\"",
+    "dev:styles": "concurrently \"npm run tailwind:watch\" \"npm run dev\" --names \"TW,DEV\" --prefix-colors \"cyan,magenta\"",
+    "tailwind:watch": "tailwindcss -i ./src/renderer/styles/globals.css -o ./src/renderer/styles/output.css --watch --verbose",
+    "tailwind:build": "tailwindcss -i ./src/renderer/styles/globals.css -o ./src/renderer/styles/output.css --minify",
+    "icons:generate": "node scripts/generate-icons.js",
+    "build": "npm run tailwind:build && npm run build:main && npm run build:renderer",
+    "build:main": "tsc --noEmitOnError false",
+    "build:renderer": "webpack --mode=production",
+    "build:watch": "tsc --watch",
+    "start": "npm run build && electron dist/main.js",
+    "make": "electron-forge make",
+    "package": "electron-forge package",
+    "publish": "electron-forge publish",
+    "lint": "eslint --ext .ts,.tsx src/",
+    "lint:fix": "eslint --ext .ts,.tsx src/ --fix",
+    "test": "jest",
+    "dist": "npm run build && electron-builder",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:linux": "npm run build && electron-builder --linux",
+    "dist:all": "npm run build && electron-builder --mac --win --linux",
+    "pack": "npm run build && electron-builder --dir"
+  },
+  "keywords": [
+    "electron",
+    "typescript",
+    "testrail",
+    "jira",
+    "reporting"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "@electron-forge/cli": "^7.9.0",
+    "@electron-forge/maker-deb": "^7.9.0",
+    "@electron-forge/maker-rpm": "^7.9.0",
+    "@electron-forge/maker-squirrel": "^7.9.0",
+    "@electron-forge/maker-zip": "^7.9.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.4.0",
+    "@electron-forge/plugin-fuses": "^7.4.0",
+    "@electron-forge/plugin-webpack": "^7.9.0",
+    "@electron/fuses": "^1.8.0",
+    "@types/node": "^20.19.17",
+    "@types/react": "^18.3.24",
+    "@types/react-dom": "^18.3.7",
+    "@typescript-eslint/eslint-plugin": "^7.13.0",
+    "@typescript-eslint/parser": "^7.13.0",
+    "autoprefixer": "^10.4.21",
+    "buffer": "^6.0.3",
+    "chokidar": "^4.0.3",
+    "concurrently": "^9.2.1",
+    "cross-env": "^7.0.3",
+    "css-loader": "^7.1.2",
+    "electron": "^31.7.7",
+    "electron-builder": "^24.13.3",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.34.0",
+    "events": "^3.3.0",
+    "html-webpack-plugin": "^5.6.4",
+    "jest": "^29.7.0",
+    "postcss": "^8.5.6",
+    "postcss-loader": "^8.2.0",
+    "process": "^0.11.10",
+    "style-loader": "^4.0.0",
+    "tailwindcss": "^3.4.17",
+    "ts-loader": "^9.5.4",
+    "typescript": "^5.9.2",
+    "util": "^0.12.5",
+    "webpack": "^5.101.3",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.2"
+  },
+  "dependencies": {
+    "@headlessui/react": "^2.0.0",
+    "@heroicons/react": "^2.1.0",
+    "@types/nodemailer": "^6.4.19",
+    "@types/react-datepicker": "^6.2.0",
+    "axios": "^1.12.2",
+    "csv-writer": "^1.6.0",
+    "date-fns": "^3.6.0",
+    "electron-store": "^8.2.0",
+    "nodemailer": "^6.10.1",
+    "react": "^18.3.1",
+    "react-datepicker": "^6.9.0",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.30.1"
+  },
+  "build": {
+    "appId": "com.yourcompany.happytrack",
+    "productName": "Happy Track - TestRail & Jira Reporter",
+    "copyright": "Copyright © 2024 Your Company",
+    "icon": "assets/icon-512.png",
+    "directories": {
+      "output": "dist-electron",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "!dist/**/*.map",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "src/assets",
+        "to": "assets",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "assets/icon-512.png",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ]
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ],
+      "icon": "assets/icon.png"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.png",
+      "category": "Office"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": true
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    }
+  }
+}
